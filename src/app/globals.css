@@ -1,4 +1,7 @@
 @import "tailwindcss";
+html {
+  scroll-behavior: smooth;
+}
 
 :root {
   --background: #ffffff;
@@ -23,4 +26,24 @@ body {
   background: var(--background);
   color: var(--foreground);
   font-family: Arial, Helvetica, sans-serif;
+}
+@keyframes scroll {
+  0% { transform: translateX(0); }
+  100% { transform: translateX(-50%); }
+}
+
+.animate-scroll {
+  animation: scroll 40s linear infinite;
+}
+@keyframes marquee {
+  0% {
+    transform: translateX(0%);
+  }
+  100% {
+    transform: translateX(-50%);
+  }
+}
+
+.animate-marquee {
+  animation: marquee 30s linear infinite;
 }
