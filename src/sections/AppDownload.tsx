@@ -61,7 +61,7 @@ export default function AppDownload() {
             alt="Fassal App Preview"
             width={600}
             height={600}
-            className="w-full ml-20 h-auto drop-shadow-xl rounded-3xl"
+            className="w-full  h-auto drop-shadow-xl rounded-3xl"
           />
         </motion.div>
       </div>
