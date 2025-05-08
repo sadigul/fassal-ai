@@ -6,7 +6,7 @@ import Navbar from '@/components/layout/Navbar';
 import Footer from '@/components/layout/Footer';
 import { supabase } from '@/supabase/supabase';
 import RichTextEditor from '@/components/ui/RichTextEditor';
-import { BadgePlus, Tag as TagIcon, Image as ImageIcon, Home, ChevronRight } from 'lucide-react';
+import {  Tag as TagIcon, Image as ImageIcon, Home, ChevronRight } from 'lucide-react';
 import Link from 'next/link';
 
 export default function CreateOrEditArticle() {
