@@ -1,5 +1,6 @@
 'use client';
 export const dynamic = 'force-dynamic';
+import { Suspense } from 'react';
 
 import { useState, useEffect, useRef } from 'react';
 import { useSearchParams, useRouter } from 'next/navigation';
@@ -122,6 +123,8 @@ export default function CreateOrEditArticle() {
   };
 
   return (
+    <Suspense fallback={<div className="pt-32 px-6 text-center text-gray-500">Loading...</div>}>
+
     <div className="min-h-screen flex flex-col">
       <Navbar />
       <main className="flex-1 bg-gray-50 pt-28 pb-16 px-6">
@@ -192,6 +195,7 @@ export default function CreateOrEditArticle() {
         </div>
       </main>
       <Footer />
-    </div>
+    </div>    </Suspense>
+
   );
 }
