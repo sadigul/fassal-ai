@@ -45,7 +45,7 @@ export default function FeaturedNews() {
           </div>
           <Link
             href="/news"
-            className="flex items-center gap-2 text-green-600 hover:underline font-medium whitespace-nowrap border border-green-600 px-4 py-2 rounded-lg"
+            className="flex items-center gap-2 text-green-600 hover:underline font-medium whitespace-nowrap  px-4 py-2 rounded-lg"
           >
             View All News <ArrowRight size={16} />
           </Link>

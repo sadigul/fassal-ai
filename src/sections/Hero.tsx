@@ -27,7 +27,7 @@ export default function Hero() {
         className="relative z-10 text-center max-w-4xl w-full pt-20 mb-50"
       >
         <p className="text-lg md:text-xl text-green-700 font-semibold mb-4">
-          Smart Crop Agri-Marketplace
+          Smart Crop-Marketplace
         </p>
         <h1 className="text-3xl sm:text-5xl md:text-6xl lg:text-7xl font-bold leading-tight text-gray-900 drop-shadow-md">
           From Farm to Market
@@ -35,8 +35,7 @@ export default function Hero() {
           with Intelligence
         </h1>
         <p className="mt-4 max-w-2xl mx-auto text-gray-700 font-medium text-base sm:text-lg">
-          Farmers get better prices. Buyers get fresher deals. Fassal.ai removes the middlemen and puts control in your hands.
-        </p>
+        Redefining agricultural commerce to create equitable, direct connections.        </p>
 
         <div className="mt-8 flex flex-wrap justify-center gap-4">
           <Link

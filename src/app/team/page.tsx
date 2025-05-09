@@ -30,9 +30,10 @@ export default function TeamPage() {
             <div className="w-[400px] h-[400px] bg-[radial-gradient(ellipse_at_center,rgba(0,0,0,0.05),transparent)] rounded-full" />
           </div>
           <p className="text-xs uppercase text-gray-500 tracking-widest mb-4">About Us</p>
-          <h1 className="text-5xl md:text-6xl  text-black mb-8 leading-tight tracking-tight">
-            We are driven by the vision of a <br className="hidden md:block" /> sustainable future
-          </h1>
+          <h1 className="text-5xl md:text-6xl text-black mb-8 leading-tight tracking-tight">
+  Redefining Agriculture <br className="hidden md:block" /> with Innovation and Impact
+</h1>
+
           <button
             onClick={() => scrollToSection('our-story')}
             className="inline-flex items-center gap-2 border border-black text-sm px-5 py-2.5 rounded-full text-black hover:bg-black hover:text-white transition"
@@ -91,7 +92,7 @@ export default function TeamPage() {
               {
                 name: 'Saad Hassan',
                 title: 'Founder & CEO',
-                image: '/images/Logo.png',
+                image: '/images/Saad.jpg',
                 link: 'https://www.linkedin.com/in/saadhassan295/',
                 description: 'Passionate about agri-tech innovation using AI and smart systems.',
               },
