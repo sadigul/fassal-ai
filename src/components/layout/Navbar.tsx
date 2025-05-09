@@ -86,6 +86,8 @@ const Navbar = () => {
           </button>
           <Link href="/news" className="hover:text-green-600 transition">News</Link>
           <Link href="/articles" className="hover:text-green-600 transition">Articles</Link>
+          <Link href="#FAQ" className="hover:text-green-600 transition">FAQs</Link>
+
 
           {/* Market Insights - Coming Soon Popup */}
         </nav>

@@ -35,28 +35,26 @@ export default function FeaturedArticles() {
     <section className="py-20 bg-gray-50 px-6">
       <div className="max-w-7xl mx-auto">
 
-        {/* Heading Left-Aligned */}
- {/* Heading and View All Button - Same Row */}
-<div className="flex items-center justify-between mb-8">
-  <div>
-    <p className="text-green-600 font-semibold uppercase text-sm tracking-wide">
-      Featured Articles
-    </p>
-    <p className="text-4xl md:text-5xl  text-gray-900 mt-2">
-      Explore Expert Insights 
-    </p>
-  </div>
-  <Link
-    href="/articles"
-    className="flex items-center gap-2 text-green-600 hover:underline font-medium whitespace-nowrap"
-  >
-    View All Articles <ArrowRight size={16} />
-  </Link>
-</div>
-
+        {/* Heading and View All Button - Top for desktop only */}
+        <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mb-8">
+          <div>
+            <p className="text-green-600 font-semibold uppercase text-sm tracking-wide">
+              Featured Articles
+            </p>
+            <p className="text-4xl md:text-5xl text-gray-900 mt-2">
+              Explore Expert Insights 
+            </p>
+          </div>
+          <Link
+            href="/articles"
+            className="hidden md:inline-flex items-center gap-2 text-green-600 hover:underline font-medium"
+          >
+            View All Articles <ArrowRight size={16} />
+          </Link>
+        </div>
 
         {/* Articles Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-8">
           {articles.length > 0 ? (
             articles.map((article) => (
               <Link
@@ -89,6 +87,16 @@ export default function FeaturedArticles() {
           ) : (
             <p className="text-gray-400 col-span-3 text-center">No featured articles found.</p>
           )}
+        </div>
+
+        {/* Mobile View All Button */}
+        <div className="md:hidden text-center">
+          <Link
+            href="/articles"
+            className="inline-flex items-center gap-2 text-green-600 hover:underline font-medium border border-green-600 px-4 py-2 rounded-lg"
+          >
+            View All Articles <ArrowRight size={16} />
+          </Link>
         </div>
 
       </div>

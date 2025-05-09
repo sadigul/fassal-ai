@@ -12,6 +12,8 @@ import FeaturedNews from "@/sections/FeatureNews";
 import Hero from "@/sections/Hero";
 import Partners from "@/sections/Partners";
 import dynamic from 'next/dynamic';
+import { CgCommunity } from 'react-icons/cg';
+import Community from '@/sections/Community';
 
 const GallerySlider = dynamic(() => import('@/sections/GallerySlider'), {
   ssr: false,
@@ -44,6 +46,7 @@ export default function Home() {
       <FeaturedNews />
       <FeaturedArticles />
       <FAQ />
+      <Community/>
       <ContactUs />
       <Footer />
     </main>
