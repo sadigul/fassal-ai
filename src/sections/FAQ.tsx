@@ -15,6 +15,11 @@ const faqs = [
       'After registering, go to your dashboard and tap “List Crops.” Upload your crop details and quality photos to get verified.',
   },
   {
+    question: 'Can I sell without GST or business registration?',
+    answer:
+      'Yes, individual farmers can sell without GST. However, commercial buyers may need documentation for bulk trade.',
+  },
+  {
     question: 'How does bidding work?',
     answer:
       'Buyers can bid on crops listed by farmers. The farmer can accept or negotiate. The highest verified bid wins the deal.',
@@ -24,11 +29,7 @@ const faqs = [
     answer:
       'Yes, every user must verify their identity and location. This keeps the marketplace secure and credible.',
   },
-  {
-    question: 'How do payments happen?',
-    answer:
-      'Payments are made directly between buyer and seller through the platform. Secure gateways and UPI will be integrated soon.',
-  },
+ 
   {
     question: 'Can I use Fassal.ai without internet?',
     answer:
@@ -50,6 +51,7 @@ const faqs = [
       'Yes, you can reach out via chat, WhatsApp, or email. Our team is available 6 days a week to assist you.',
   },
 ];
+
 
 export default function FAQSection() {
   const [openIndex, setOpenIndex] = useState<number | null>(null);
@@ -77,7 +79,7 @@ Frequently Asked Questions          </p>
               <div className="flex items-start gap-8 cursor-pointer">
                 <span className="text-lg font-bold text-black min-w-[32px]">{String(idx + 1).padStart(2, '0')}</span>
                 <div className="flex-1">
-                  <h3 className="text-3xl font-medium text-black leading-relaxed">
+                  <h3 className="text-2xl font-medium text-black leading-relaxed">
                     {faq.question}
                   </h3>
                   <AnimatePresence>
