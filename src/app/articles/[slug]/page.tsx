@@ -7,6 +7,13 @@ import Link from 'next/link';
 import Navbar from '@/components/layout/Navbar';
 import Footer from '@/components/layout/Footer';
 import { ChevronRight, Home } from 'lucide-react';
+import { Poppins } from 'next/font/google';
+
+const poppins = Poppins({
+  subsets: ['latin'],
+  weight: ['400', '500', '600', '700'],
+  variable: '--font-poppins',
+});
 
 export default function ArticleDetail() {
   const { slug } = useParams();
@@ -64,7 +71,7 @@ export default function ArticleDetail() {
   }
 
   return (
-    <div className="min-h-screen flex flex-col">
+    <div className={`min-h-screen flex flex-col ${poppins.variable} font-sans`}>
       <Navbar />
 
       <main className="flex-1 bg-gray-50 pt-24 pb-16 px-6">
@@ -82,19 +89,19 @@ export default function ArticleDetail() {
 
           {/* Two Column Layout */}
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-12">
-            {/* Main Article Left */}
+            {/* Main Article */}
             <div className="lg:col-span-2">
               <h1 className="text-3xl md:text-4xl font-bold text-black mb-4">{article.title}</h1>
+
               <div className="text-gray-500 text-sm mb-4">
-  Published on {new Date(article.created_at).toLocaleDateString('en-US', {
-    year: 'numeric',
-    month: 'long',
-    day: 'numeric',
-  })}
-</div>
+                Published on {new Date(article.created_at).toLocaleDateString('en-US', {
+                  year: 'numeric',
+                  month: 'long',
+                  day: 'numeric',
+                })}
+              </div>
 
-
-              {/* Feature Image */}
+              {/* Image */}
               {article.image_url && (
                 <div className="mb-8">
                   <img
@@ -105,35 +112,36 @@ export default function ArticleDetail() {
                 </div>
               )}
 
-              {/* Short Description */}
+              {/* Description First */}
               {article.description && (
-  <div className="text-gray-700 text-lg mb-6 space-y-4">
-    {article.description.split('\n').map((para: string, index: number) => (
-      <p key={index}>
-        {para.trim()}
-      </p>
-    ))}
-  </div>
-)}
+                <div className="text-black text-lg mb-8 space-y-4 leading-relaxed">
+                  {article.description.split('\n').map((para: string, index: number) => (
+                    <p key={index} className="mb-4">{para.trim()}</p>
+                  ))}
+                </div>
+              )}
 
-              {/* Tags */}
-              <div className="flex flex-wrap gap-2 mb-6">
-                {article.tags?.map((tag: string, index: number) => (
-                  <span
-                    key={index}
-                    className="px-3 py-1 text-sm rounded-full bg-green-100 text-green-700"
-                  >
-                    {tag}
-                  </span>
-                ))}
-              </div>
-              {/* Full Content */}
-              <div className="prose prose-green max-w-none">
+              {/* Full HTML Content with Forced Paragraph Spacing */}
+              <div className="prose max-w-none text-black text-lg prose-p:text-black prose-p:mb-4 prose-li:text-black prose-strong:text-black prose-b:text-black prose-b:text-lg prose-b:font-semibold prose-headings:text-black prose-headings:font-bold prose-headings:mb-4 prose-ul:mb-4 prose-ol:mb-4 prose-li:mb-2 leading-relaxed mb-8">
                 <div dangerouslySetInnerHTML={{ __html: article.content }} />
               </div>
+
+              {/* Tags Last */}
+              {article.tags?.length > 0 && (
+                <div className="flex flex-wrap gap-2 mt-4">
+                  {article.tags.map((tag: string, index: number) => (
+                    <span
+                      key={index}
+                      className="px-3 py-1 text-sm rounded-full bg-green-100 text-green-700"
+                    >
+                      {tag}
+                    </span>
+                  ))}
+                </div>
+              )}
             </div>
 
-            {/* Related Articles Right */}
+            {/* Related Articles */}
             <div className="space-y-6">
               <h2 className="text-2xl font-bold text-black mb-4">Related Articles</h2>
               {relatedArticles.length > 0 ? (
@@ -152,14 +160,13 @@ export default function ArticleDetail() {
                       <h3 className="text-md font-bold text-black leading-tight mb-1">
                         {related.title}
                       </h3>
-                      <div className="text-gray-500 text-sm mb-4">
-   {new Date(article.created_at).toLocaleDateString('en-US', {
-    year: 'numeric',
-    month: 'long',
-    day: 'numeric',
-  })}
-</div>
-
+                      <div className="text-gray-500 text-sm mb-2">
+                        {new Date(related.created_at).toLocaleDateString('en-US', {
+                          year: 'numeric',
+                          month: 'long',
+                          day: 'numeric',
+                        })}
+                      </div>
                       <p className="text-gray-500 text-sm">
                         {related.description?.split(' ').slice(0, 17).join(' ')}...
                       </p>
