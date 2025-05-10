@@ -62,48 +62,68 @@ export default function CreateOrEditArticle() {
   const slugify = (text: string) =>
     text.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)+/g, '');
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setLoading(true);
+const handleSubmit = async (e: React.FormEvent) => {
+  e.preventDefault();
+  setLoading(true);
 
-    let finalImageUrl = imageUrl;
-    if (localImageFile) {
-      const { data, error } = await supabase.storage
-        .from('article-images')
-        .upload(`articles/${Date.now()}-${localImageFile.name}`, localImageFile, {
-          cacheControl: '3600',
-          upsert: false
-        });
-      if (error) {
-        console.error('Upload Error:', error);
-        setLoading(false);
-        return;
-      }
-      const { publicUrl } = supabase.storage.from('article-images').getPublicUrl(data.path);
-      finalImageUrl = publicUrl;
+  let finalImageUrl = imageUrl;
+
+  // If a local file is selected, upload it
+  if (localImageFile) {
+    const filePath = `articles/${Date.now()}-${localImageFile.name}`;
+    const { data: uploadData, error: uploadError } = await supabase.storage
+      .from('article-images')
+      .upload(filePath, localImageFile, {
+        cacheControl: '3600',
+        upsert: false
+      });
+
+    if (uploadError) {
+      console.error('Upload Error:', uploadError);
+      alert('Image upload failed');
+      setLoading(false);
+      return;
     }
 
-    const slug = slugify(title);
+    const { data: publicUrlData } = supabase
+      .storage
+      .from('article-images')
+      .getPublicUrl(filePath);
 
-    if (articleId) {
-      const { error } = await supabase.from('articles')
-        .update({ title, description, content, image_url: finalImageUrl, tags, category, is_featured: isFeatured, slug })
-        .eq('id', articleId);
-      if (error) alert('Failed to update article ❌');
-      else {
-        alert('Article updated successfully ✅');
-        router.push('/admin/articles');
-      }
-    } else {
-      const { error } = await supabase.from('articles').insert([{ title, description, content, image_url: finalImageUrl, tags, category, is_featured: isFeatured, slug }]);
-      if (error) alert('Failed to create article ❌');
-      else {
-        alert('Article created successfully ✅');
-        router.push('/admin/articles');
-      }
-    }
-    setLoading(false);
+    finalImageUrl = publicUrlData.publicUrl;
+  }
+
+  const slug = slugify(title);
+
+  const payload = {
+    title,
+    description,
+    content,
+    image_url: finalImageUrl,
+    tags,
+    category,
+    is_featured: isFeatured,
+    slug
   };
+
+  let result;
+  if (articleId) {
+    result = await supabase.from('articles').update(payload).eq('id', articleId);
+  } else {
+    result = await supabase.from('articles').insert([payload]);
+  }
+
+  if (result.error) {
+    alert(`Failed to ${articleId ? 'update' : 'create'} article ❌`);
+    console.error(result.error);
+  } else {
+    alert(`Article ${articleId ? 'updated' : 'created'} successfully ✅`);
+    router.push('/admin/articles');
+  }
+
+  setLoading(false);
+};
+
 
   const addTag = () => {
     if (newTag.trim() && !tags.includes(newTag.trim())) {
