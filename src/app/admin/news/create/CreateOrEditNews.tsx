@@ -42,9 +42,7 @@ export default function CreateOrEditNews() {
   ];
 
   useEffect(() => {
-    if (newsId) {
-      fetchNews();
-    }
+    if (newsId) fetchNews();
   }, [newsId]);
 
   const fetchNews = async () => {
@@ -62,12 +60,8 @@ export default function CreateOrEditNews() {
     }
   };
 
-  const generateSlug = (title: string) => {
-    return title
-      .toLowerCase()
-      .replace(/[^a-z0-9]+/g, '-')
-      .replace(/(^-|-$)+/g, '');
-  };
+  const generateSlug = (title: string) =>
+    title.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)+/g, '');
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -76,41 +70,46 @@ export default function CreateOrEditNews() {
     let finalImageUrl = imageUrl;
 
     if (localImageFile) {
-      const { data, error } = await supabase.storage
+      const filePath = `news/${Date.now()}-${localImageFile.name}`;
+      const { data: uploadData, error: uploadError } = await supabase.storage
         .from('news-images')
-        .upload(`news/${Date.now()}-${localImageFile.name}`, localImageFile, { cacheControl: '3600', upsert: false });
+        .upload(filePath, localImageFile, { cacheControl: '3600', upsert: false });
 
-      if (error) {
-        console.error('Upload Error:', error);
+      if (uploadError) {
+        console.error('Upload Error:', uploadError);
         setLoading(false);
         return;
       }
 
-      const { publicUrl } = supabase.storage.from('news-images').getPublicUrl(data.path);
-      finalImageUrl = publicUrl;
+      const publicUrlResponse = supabase.storage.from('news-images').getPublicUrl(filePath);
+      finalImageUrl = publicUrlResponse.data.publicUrl;
     }
 
     const slug = generateSlug(title);
+    const payload = {
+      title,
+      slug,
+      description,
+      content,
+      image_url: finalImageUrl,
+      tags,
+      category,
+      is_featured: isFeatured
+    };
 
+    let result;
     if (newsId) {
-      const { error } = await supabase.from('news')
-        .update({ title, slug, description, content, image_url: finalImageUrl, tags, category, is_featured: isFeatured })
-        .eq('id', newsId);
-
-      if (error) alert('Failed to update ❌');
-      else {
-        alert('News updated successfully ✅');
-        router.push('/admin/news');
-      }
+      result = await supabase.from('news').update(payload).eq('id', newsId);
     } else {
-      const { error } = await supabase.from('news')
-        .insert([{ title, slug, description, content, image_url: finalImageUrl, tags, category, is_featured: isFeatured }]);
+      result = await supabase.from('news').insert([payload]);
+    }
 
-      if (error) alert('Failed to create ❌');
-      else {
-        alert('News created successfully ✅');
-        router.push('/admin/news');
-      }
+    if (result.error) {
+      alert(`Failed to ${newsId ? 'update' : 'create'} news ❌`);
+      console.error(result.error);
+    } else {
+      alert(`News ${newsId ? 'updated' : 'created'} successfully ✅`);
+      router.push('/admin/news');
     }
 
     setLoading(false);
@@ -123,9 +122,8 @@ export default function CreateOrEditNews() {
     }
   };
 
-  const removeTag = (tagToRemove: string) => {
-    setTags(tags.filter((tag) => tag !== tagToRemove));
-  };
+  const removeTag = (tagToRemove: string) =>
+    setTags(tags.filter(tag => tag !== tagToRemove));
 
   const handleTagKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key === 'Enter') {
@@ -162,7 +160,6 @@ export default function CreateOrEditNews() {
             <span className="text-green-600 font-semibold">{newsId ? 'Edit' : 'Create'}</span>
           </nav>
 
-          {/* Form */}
           <form onSubmit={handleSubmit} className="space-y-10 bg-white shadow rounded-3xl p-10">
 
             {/* Title */}

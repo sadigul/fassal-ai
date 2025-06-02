@@ -23,13 +23,24 @@ export default function Footer() {
         {/* Navigation */}
         <div>
           <h4 className="text-lg font-semibold mb-4 border-b border-green-600 pb-1">Quick Links</h4>
-          <ul className="space-y-2 text-sm text-green-100">
-            {[ ['Home', '/'], ['Our Story', '/about'], ['Team', '/team'], ['Articles', '/articles'], ['News', '/news'], ['FAQs', '/faq'], ['Mandi Rates', '/mandi-rates'], ['Contact Us', '/contact'] ].map(([label, href]) => (
-              <li key={label}>
-                <Link href={href} className="hover:text-white transition-colors">{label}</Link>
-              </li>
-            ))}
-          </ul>
+         <ul className="space-y-2 text-sm text-green-100">
+  {[
+    ['Home', '/'],
+    ['Our Story', '/about'],
+    ['Team', '/team'],
+    ['Articles', '/articles'],
+    ['News', '/news'],
+    ['FAQs', '/faq'],
+    ['Mandi Rates', '/mandi-rates'],
+    ['Contact Us', '/contact'],
+    ['Delete My Account', '/account-deletion'], // ✅ Add this line
+  ].map(([label, href]) => (
+    <li key={label}>
+      <Link href={href} className="hover:text-white transition-colors">{label}</Link>
+    </li>
+  ))}
+</ul>
+
         </div>
 
         {/* Social Media */}

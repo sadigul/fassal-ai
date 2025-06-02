@@ -1,4 +1,4 @@
-import { useRef, useEffect } from "react";
+import { useRef, useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import {
   Bold,
@@ -8,7 +8,7 @@ import {
   AlignCenter,
   AlignRight,
   Link as LinkIcon,
-  Image as ImageIcon
+  Image as ImageIcon,
 } from "lucide-react";
 
 interface RichTextEditorProps {
@@ -18,6 +18,7 @@ interface RichTextEditorProps {
   rows?: number;
 }
 
+// Preserve only safe, styled HTML
 const filterRefinedContent = (html: string) => {
   const wrapper = document.createElement("div");
   wrapper.innerHTML = html;
@@ -28,7 +29,6 @@ const filterRefinedContent = (html: string) => {
     if (node.nodeType === Node.ELEMENT_NODE) {
       const el = node as HTMLElement;
 
-      // Remove disallowed tags
       if (!allowedTags.includes(el.tagName)) {
         const parent = el.parentElement;
         if (parent) {
@@ -36,14 +36,12 @@ const filterRefinedContent = (html: string) => {
           parent.removeChild(el);
         }
       } else {
-        // Remove all attributes except essential
         [...el.attributes].forEach((attr) => {
           if (!["href", "src", "alt", "target", "rel"].includes(attr.name)) {
             el.removeAttribute(attr.name);
           }
         });
 
-        // Handle image click-to-remove behavior
         if (el.tagName === "IMG") {
           el.style.cursor = "pointer";
           el.title = "Click to remove image";
@@ -59,23 +57,19 @@ const filterRefinedContent = (html: string) => {
 
   walk(wrapper);
 
-  // Trim and return clean content
-  return wrapper.innerHTML
-    .replace(/(<br\s*\/?>\s*){2,}/g, "<br>") // Remove multiple <br><br><br>
-    .trim();
+  return wrapper.innerHTML.replace(/(<br\s*\/?>\s*){2,}/g, "<br>");
 };
-
 
 const RichTextEditor = ({ id, value, onChange, rows = 10 }: RichTextEditorProps) => {
   const editorRef = useRef<HTMLDivElement>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const [fontSize, setFontSize] = useState(14); // default 14px
 
   useEffect(() => {
     if (editorRef.current && document.activeElement !== editorRef.current) {
       editorRef.current.innerHTML = value;
     }
   }, [value]);
-  
 
   const syncContent = () => {
     const html = editorRef.current?.innerHTML || "";
@@ -147,7 +141,7 @@ const RichTextEditor = ({ id, value, onChange, rows = 10 }: RichTextEditorProps)
     sel.addRange(range);
   };
 
-  const handlePaste = async (e: React.ClipboardEvent<HTMLDivElement>) => {
+  const handlePaste = (e: React.ClipboardEvent<HTMLDivElement>) => {
     e.preventDefault();
     const clipboard = e.clipboardData;
     const items = clipboard?.items;
@@ -188,14 +182,30 @@ const RichTextEditor = ({ id, value, onChange, rows = 10 }: RichTextEditorProps)
   return (
     <div className="border border-gray-200 dark:border-gray-700 rounded-lg overflow-hidden">
       <div className="bg-gray-50 dark:bg-gray-800 p-2 border-b border-gray-200 dark:border-gray-700 flex gap-1 flex-wrap">
-        <Button type="button" variant="ghost" size="sm" className="h-8 w-8 p-0" onClick={() => toggleInlineTag("bold")}> <Bold className="h-4 w-4" /> </Button>
-        <Button type="button" variant="ghost" size="sm" className="h-8 w-8 p-0" onClick={() => toggleInlineTag("italic")}> <Italic className="h-4 w-4" /> </Button>
-        <Button type="button" variant="ghost" size="sm" className="h-8 w-8 p-0" onClick={insertBulletList}> <List className="h-4 w-4" /> </Button>
-        <Button type="button" variant="ghost" size="sm" className="h-8 w-8 p-0" onClick={() => applyAlignment("left")}> <AlignLeft className="h-4 w-4" /> </Button>
-        <Button type="button" variant="ghost" size="sm" className="h-8 w-8 p-0" onClick={() => applyAlignment("center")}> <AlignCenter className="h-4 w-4" /> </Button>
-        <Button type="button" variant="ghost" size="sm" className="h-8 w-8 p-0" onClick={() => applyAlignment("right")}> <AlignRight className="h-4 w-4" /> </Button>
-        <Button type="button" variant="ghost" size="sm" className="h-8 w-8 p-0" onClick={applyLink}> <LinkIcon className="h-4 w-4" /> </Button>
-        <Button type="button" variant="ghost" size="sm" className="h-8 w-8 p-0" onClick={() => fileInputRef.current?.click()}> <ImageIcon className="h-4 w-4" /> </Button>
+        <Button type="button" variant="ghost" size="sm" className="h-8 w-8 p-0" onClick={() => toggleInlineTag("bold")}>
+          <Bold className="h-4 w-4" />
+        </Button>
+        <Button type="button" variant="ghost" size="sm" className="h-8 w-8 p-0" onClick={() => toggleInlineTag("italic")}>
+          <Italic className="h-4 w-4" />
+        </Button>
+        <Button type="button" variant="ghost" size="sm" className="h-8 w-8 p-0" onClick={insertBulletList}>
+          <List className="h-4 w-4" />
+        </Button>
+        <Button type="button" variant="ghost" size="sm" className="h-8 w-8 p-0" onClick={() => applyAlignment("left")}>
+          <AlignLeft className="h-4 w-4" />
+        </Button>
+        <Button type="button" variant="ghost" size="sm" className="h-8 w-8 p-0" onClick={() => applyAlignment("center")}>
+          <AlignCenter className="h-4 w-4" />
+        </Button>
+        <Button type="button" variant="ghost" size="sm" className="h-8 w-8 p-0" onClick={() => applyAlignment("right")}>
+          <AlignRight className="h-4 w-4" />
+        </Button>
+        <Button type="button" variant="ghost" size="sm" className="h-8 w-8 p-0" onClick={applyLink}>
+          <LinkIcon className="h-4 w-4" />
+        </Button>
+        <Button type="button" variant="ghost" size="sm" className="h-8 w-8 p-0" onClick={() => fileInputRef.current?.click()}>
+          <ImageIcon className="h-4 w-4" />
+        </Button>
         <input
           type="file"
           accept="image/*"
@@ -203,6 +213,12 @@ const RichTextEditor = ({ id, value, onChange, rows = 10 }: RichTextEditorProps)
           ref={fileInputRef}
           onChange={handleImageUpload}
         />
+        <Button type="button" variant="ghost" size="sm" className="h-8 px-2" onClick={() => setFontSize((s) => Math.max(10, s - 1))}>
+          A-
+        </Button>
+        <Button type="button" variant="ghost" size="sm" className="h-8 px-2" onClick={() => setFontSize((s) => Math.min(36, s + 1))}>
+          A+
+        </Button>
       </div>
 
       <div
@@ -210,8 +226,8 @@ const RichTextEditor = ({ id, value, onChange, rows = 10 }: RichTextEditorProps)
         contentEditable
         onInput={syncContent}
         onPaste={handlePaste}
-        className="p-3 text-sm text-black min-h-[200px] outline-none border-0 focus-visible:ring-0 focus-visible:ring-offset-0"
-        style={{ whiteSpace: "pre-wrap" }}
+        className="p-3 text-black min-h-[200px] outline-none border-0 focus-visible:ring-0 focus-visible:ring-offset-0"
+        style={{ whiteSpace: "pre-wrap", fontSize: `${fontSize}px` }}
       />
     </div>
   );
